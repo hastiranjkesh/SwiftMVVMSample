@@ -1,4 +1,4 @@
-# SwiftMVVMSample
+# Swift MVVM Sample
 MVVM has become the default way I write iOS apps. There are many advantages in using MVVM vs the classic MVC in iOS development. It divides the business logic with the presentation layer. Instead of having a massive ViewController, we can delegate things like requesting data from the network or a local database to viewModel.
 
 This is a simple example that shows how to use MVVM in Swift project.
