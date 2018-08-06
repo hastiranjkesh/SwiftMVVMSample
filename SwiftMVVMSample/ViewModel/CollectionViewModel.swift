@@ -41,7 +41,7 @@ class CollectionViewModel {
     
     func viewModelForCell(indexPath: IndexPath) -> CollectionCellViewModel {
         let item = photos.value?.results![indexPath.row]
-        let cellViewModel = CollectionCellViewModel(imagePath: item?.artworkUrl100 ?? "", trackName: item?.trackName ?? "")
+        let cellViewModel = CollectionCellViewModel(imagePath: item?.artworkUrl100 ?? "", trackName: item?.trackName ?? "", service: service)
         return cellViewModel
     }
     

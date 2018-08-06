@@ -17,8 +17,14 @@ class NetworkRepository: BaseService {
     func getMusicVideoList(completion: @escaping (ResponeStatus<MusicVideoList>) -> Void) {
         
         let url = "https://itunes.apple.com/search?term=onedirection&entity=musicVideo"
-        APIManager().getData(urlPath: url) { (result: ResponeStatus<MusicVideoList>) in
+        APIManager().getDataList(urlPath: url) { (result: ResponeStatus<MusicVideoList>) in
             completion(result)
+        }
+    }
+    
+    func downloadImage(path: String, completion: @escaping (Data) -> Void) {
+        APIManager().downloadImage(path: path) { (data) in
+            completion(data)
         }
     }
 }

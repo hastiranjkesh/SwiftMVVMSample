@@ -13,7 +13,7 @@ class APIManager {
     let defaultSession = URLSession(configuration: URLSessionConfiguration.default)
     var dataTask: URLSessionDataTask?
     
-    func getData<T>(urlPath: String, completionHandler: @escaping (ResponeStatus<T>) -> Void) {
+    func getDataList<T>(urlPath: String, completionHandler: @escaping (ResponeStatus<T>) -> Void) {
         
         dataTask?.cancel()
         
@@ -43,5 +43,18 @@ class APIManager {
             }
         }
         dataTask?.resume()
+    }
+    
+    func downloadImage(path: String, completionHandler: @escaping (Data) -> Void) {
+        if let imageUrl = URL(string: path) {
+            dataTask = defaultSession.dataTask(with: imageUrl, completionHandler: { data, response, error in
+                guard let data = data, error == nil else {
+                    return
+                }
+                completionHandler(data)
+//                self.imageData.value = data
+            })
+            dataTask?.resume()
+        }
     }
 }
