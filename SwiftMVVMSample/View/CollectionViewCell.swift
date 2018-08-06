@@ -16,8 +16,8 @@ class CollectionViewCell: UICollectionViewCell {
     
     var viewModel: CollectionCellViewModel! {
         didSet {
-            setContent()
             bindUI()
+            setContent()
         }
     }
     

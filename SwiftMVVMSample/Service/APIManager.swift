@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import UIKit
 
 class APIManager {
     
     let defaultSession = URLSession(configuration: URLSessionConfiguration.default)
     var dataTask: URLSessionDataTask?
+    let imageCache = NSCache<NSString, AnyObject>()
     
     func getDataList<T>(urlPath: String, completionHandler: @escaping (ResponeStatus<T>) -> Void) {
         
@@ -47,13 +49,22 @@ class APIManager {
     
     func downloadImage(path: String, completionHandler: @escaping (Data) -> Void) {
         if let imageUrl = URL(string: path) {
-            dataTask = defaultSession.dataTask(with: imageUrl, completionHandler: { data, response, error in
-                guard let data = data, error == nil else {
-                    return
-                }
-                completionHandler(data)
-            })
-            dataTask?.resume()
+            
+            if let cachedImage = imageCache.object(forKey: imageUrl.absoluteString as NSString) {
+                completionHandler(cachedImage as! Data)
+            } else {
+                dataTask = defaultSession.dataTask(with: imageUrl, completionHandler: { data, response, error in
+                    guard let data = data, error == nil else {
+                        return
+                    }
+                    
+                    if let url = response?.url {
+                        self.imageCache.setObject(data as NSData, forKey: url.absoluteString as NSString)
+                    }
+                    completionHandler(data)
+                })
+                dataTask?.resume()
+            }
         }
     }
 }

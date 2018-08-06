@@ -14,16 +14,18 @@ protocol BaseService {
 
 class NetworkRepository: BaseService {
     
+    var apiManager: APIManager? = APIManager()
+    
     func getMusicVideoList(completion: @escaping (ResponeStatus<MusicVideoList>) -> Void) {
         
         let url = "https://itunes.apple.com/search?term=onedirection&entity=musicVideo"
-        APIManager().getDataList(urlPath: url) { (result: ResponeStatus<MusicVideoList>) in
+        apiManager?.getDataList(urlPath: url) { (result: ResponeStatus<MusicVideoList>) in
             completion(result)
         }
     }
     
     func downloadImage(path: String, completion: @escaping (Data) -> Void) {
-        APIManager().downloadImage(path: path) { (data) in
+        apiManager?.downloadImage(path: path) { (data) in
             completion(data)
         }
     }
