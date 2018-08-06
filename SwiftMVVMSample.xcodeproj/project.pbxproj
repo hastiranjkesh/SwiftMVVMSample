@@ -172,7 +172,6 @@
 				2D3A5B6921161B1D00328E72 /* Frameworks */,
 				2D3A5B6A21161B1D00328E72 /* Resources */,
 				7A81C9C9FFAABA63232E04B8 /* [CP] Embed Pods Frameworks */,
-				168EADE7A3E04FEECB404765 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -231,21 +230,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		168EADE7A3E04FEECB404765 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SwiftMVVMSample/Pods-SwiftMVVMSample-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		19C371D7B9969246B1F539A1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

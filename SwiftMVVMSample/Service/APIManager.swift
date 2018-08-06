@@ -7,40 +7,41 @@
 //
 
 import Foundation
-import Alamofire
 
 class APIManager {
     
-    static func getData<T>(urlPath: String, completionHandler: @escaping (ResponeStatus<T>) -> Void) {
+    let defaultSession = URLSession(configuration: URLSessionConfiguration.default)
+    var dataTask: URLSessionDataTask?
+    
+    func getData<T>(urlPath: String, completionHandler: @escaping (ResponeStatus<T>) -> Void) {
+        
+        dataTask?.cancel()
         
         var request = URLRequest(url: URL(string: urlPath)!, cachePolicy: URLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: 60)
         request.httpMethod = "GET"
         
-        let session = URLSession.shared
-        let dataTask = session.dataTask(with: request) { (resultData, response, error) in
+        dataTask = defaultSession.dataTask(with: request) { (data, response, error) in
+            defer { self.dataTask = nil }
             
-            if error != nil {
-                completionHandler(ResponeStatus.failure(errorType: ErrorType.service, message: error?.localizedDescription ?? "ERROR: Not Connected To Internet"))
-            } else {
-                if let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                    if statusCode != 200 {
-                        completionHandler(ResponeStatus.failure(errorType: ErrorType.api(statusCode: statusCode), message: "ERROR: Server Error"))
-                    } else {
-                        if let data = resultData {
-                            do {
-                                let jsonDecoder = JSONDecoder()
-                                let result = try jsonDecoder.decode(T.self, from: data)
-                                completionHandler(ResponeStatus.success(data: result))
-                            } catch let error {
-                                completionHandler(ResponeStatus.failure(errorType: ErrorType.api(statusCode: statusCode), message: error.localizedDescription))
-                            }
-                        } else {
-                            completionHandler(ResponeStatus.failure(errorType: ErrorType.api(statusCode: statusCode), message: "ERROR: Data is empty"))
-                        }
+            if let error = error {
+                completionHandler(ResponeStatus.failure(errorType: ErrorType.service, message: error.localizedDescription))
+                
+            } else if let data = data {
+                if let response = response as? HTTPURLResponse, response.statusCode == 200 {
+                    do {
+                        let jsonDecoder = JSONDecoder()
+                        let result = try jsonDecoder.decode(T.self, from: data)
+                        completionHandler(ResponeStatus.success(data: result))
+                    } catch let error {
+                        completionHandler(ResponeStatus.failure(errorType: ErrorType.api(statusCode: response.statusCode), message: error.localizedDescription))
                     }
+                }
+            } else {
+                if let response = response as? HTTPURLResponse {
+                    completionHandler(ResponeStatus.failure(errorType: ErrorType.api(statusCode: response.statusCode), message: "ERROR: Server Error"))
                 }
             }
         }
-        dataTask.resume()
+        dataTask?.resume()
     }
 }
