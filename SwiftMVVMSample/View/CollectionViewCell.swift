@@ -7,12 +7,15 @@
 //
 
 import Foundation
-import AlamofireImage
+import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var trackNameLabel: UILabel!
+    
+    var dataTask: URLSessionDataTask?
+    var defaultSession = URLSession(configuration: URLSessionConfiguration.default)
     
     var viewModel: CollectionCellViewModel! {
         didSet {
@@ -21,13 +24,19 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     func setContent() {
-        
+        imageView.image = #imageLiteral(resourceName: "placeholder")
         trackNameLabel.text = viewModel.trackName
         
         if let imageUrl = URL(string: viewModel.imagePath) {
-            imageView.af_setImage(withURL: imageUrl, placeholderImage: #imageLiteral(resourceName: "placeholder"))
-        } else {
-            imageView.image = #imageLiteral(resourceName: "placeholder")
+            dataTask = defaultSession.dataTask(with: imageUrl, completionHandler: { data, response, error in
+                guard let data = data, error == nil else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.imageView.image = UIImage(data: data)
+                }
+            })
+            dataTask?.resume()
         }
     }
 }
