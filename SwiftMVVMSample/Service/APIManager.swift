@@ -52,7 +52,6 @@ class APIManager {
                     return
                 }
                 completionHandler(data)
-//                self.imageData.value = data
             })
             dataTask?.resume()
         }
